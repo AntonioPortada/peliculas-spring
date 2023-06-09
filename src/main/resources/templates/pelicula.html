@@ -1,12 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-	<head>
-		<title th:text="${titulo}"></title>
-	</head>
-	
-	<body>
-		<h1 th:text="${titulo}"></h1>
-		<br>
-		Está es la vista de peliculas.
-	</body>
+
+<head th:insert="layout/head"></head>
+
+<body>
+	<header th:insert="layout/header"></header>
+
+	<div class="container">
+		<form action="@{/pelicula}" th:object="${pelicula}" method="post" class="col-md-8 offset-md-2">
+			<h2 th:text="${titulo}" class="py-4"></h2>
+			
+			<div class="mb-3">
+				<label for="exampleInputEmail1" class="form-label">Nombre</label>
+				<input type="text" class="form-control" id="nombre" th:field="*{nombre}" aria-describedby="emailHelp">
+			</div>
+			<div class="mb-3">
+				<label for="exampleInputPassword1" class="form-label">Fecha Estreno</label>
+				<input type="date" class="form-control" id="fechaEstreno" th:field="*{fechaEstreno}">
+			</div>
+			<div class="mb-3">
+				<label for="exampleInputPassword1" class="form-label">Genéro</label>	
+				<select class="form.select col-sm-10" th:field="*{genero}">
+					<option th:each="genero : ${generos}" th:text="${genero.nombre}" th:value="${genero.id}"></option>
+				</select>
+			</div>
+			<button type="submit" class="btn btn-primary float-end">Submit</button>
+		</form>
+	</div>
+</body>
+
 </html>

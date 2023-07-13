@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:insert="layout/head"></head>
+<head th:insert="~{layout/head :: head}"></head>
 
 <body>
-	<header th:insert="layout/header"></header>
+	<header th:insert="~{layout/header :: header}"></header>
 
 	<div class="container">
-		<h2>Soy HOME</h2>
+		<div class="card" style="width: 18rem;" th:each="p : ${peliculas}">
+			<img class="card-img-top" th:src="@{${'/archivo?n=' + p.imagen }}" alt="foto">
+			<div class="card-body">
+				<h5 class="card-title" th:text="${p.nombre}"></h5>
+				<p class="card-text" th:text="${p.genero.nombre}"></p>
+				<div class="catalogo-actor-container" th:each="prota : ${p.protagonistas}">
+					<div class="catalogo-actor-imagen" th:style="'background-image:url(' + ${prota.urlImage} + ')'"></div>
+					<div class="catalogo-actor-texto" th:text="${prota.nombre}"></div>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 

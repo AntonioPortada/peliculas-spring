@@ -19,8 +19,8 @@ public class Actor implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String nombre;
-	@Column(name = "url_imagen")
-	private String urlImagen;
+	@Column(name = "url_image")
+	private String urlImage;
 
 	public Long getId() {
 		return id;
@@ -38,11 +38,11 @@ public class Actor implements Serializable {
 		this.nombre = nombre;
 	}
 
-	public String getUrlImagen() {
-		return urlImagen;
+	public String getUrlImage() {
+		return urlImage;
 	}
 
-	public void setUrlImagen(String urlImagen) {
-		this.urlImagen = urlImagen;
+	public void setUrlImage(String urlImagen) {
+		this.urlImage = urlImagen;
 	}
 }

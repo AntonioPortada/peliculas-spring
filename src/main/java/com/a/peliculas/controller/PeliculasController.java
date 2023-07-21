@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.a.peliculas.entity.Actor;
 import com.a.peliculas.entity.Pelicula;
 import com.a.peliculas.service.IActorService;
 import com.a.peliculas.service.IArchivoService;
@@ -53,8 +54,19 @@ public class PeliculasController {
 	@GetMapping("/pelicula/{id}")
 	public String editar(@PathVariable(name = "id") Long id, Model model) {
 		
-		Pelicula pelicula = new Pelicula();
+		Pelicula pelicula = peliculaService.findById(id);
+		String ids = "";
 		
+		for(Actor actor : pelicula.getProtagonistas()) {
+			if("".equals(ids)) {
+				ids = actor.getId().toString();
+			}
+			else {
+				ids = ids +", "+ actor.getId().toString();
+			}
+		}
+		
+		model.addAttribute("ids", ids);
 		model.addAttribute("titulo", "Editar pelicula");
 		model.addAttribute("pelicula", pelicula);
 		model.addAttribute("generos", generoService.findAll());
@@ -85,9 +97,11 @@ public class PeliculasController {
 			pelicula.setImagen("default.jpg");
 		}
 		
-		List<Long> idsActores = Arrays.stream(ids.split(",")).map(Long::parseLong).collect(Collectors.toList());
-		
-		pelicula.setProtagonistas(actorService.findAllById(idsActores));
+		if(ids!=null && ids!="") {
+			List<Long> idsActores = Arrays.stream(ids.split(",")).map(Long::parseLong).collect(Collectors.toList());
+			
+			pelicula.setProtagonistas(actorService.findAllById(idsActores));
+		}
 		
 		peliculaService.save(pelicula);
 		
@@ -98,10 +112,19 @@ public class PeliculasController {
 	public String home(Model model) {
 		
 		model.addAttribute("peliculas", peliculaService.findAll());
-		model.addAttribute("msg", "Catálogo actualizado");
+//		model.addAttribute("msg", "Catálogo actualizado");
 		model.addAttribute("tipoMsg", "danger");
 		
 		return "home";
+	}
+
+	@GetMapping("/listado")
+	public String listado(Model model) {
+		
+		model.addAttribute("titulo", "Listado de películas");
+		model.addAttribute("peliculas", peliculaService.findAll());
+		
+		return "listado";
 	}
 	
 	private String getExtension(String archivo) {

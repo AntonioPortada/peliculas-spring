@@ -19,7 +19,10 @@
 				<tr th:each="pelicula : ${peliculas}">
 					<th th:text="${pelicula.nombre}"></th>
 					<td th:text="${pelicula.genero.nombre}"></td>
-					<td><a th:href="@{'/pelicula/' + ${pelicula.id}}">Editar</a></td>
+					<td>
+						<a th:href="@{'/pelicula/' + ${pelicula.id}}">Editar</a>
+						<a class="text-danger" th:href="@{'/pelicula/' + ${pelicula.id + '/delete'}}">Eliminar</a>
+					</td>
 				</tr>
 			</tbody>
 		</table>

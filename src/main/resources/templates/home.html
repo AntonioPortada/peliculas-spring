@@ -13,12 +13,21 @@
 				<h5 class="card-title" th:text="${p.nombre}"></h5>
 				<p class="card-text" th:text="${p.genero.nombre}"></p>
 				<div class="catalogo-actor-container" th:each="prota : ${p.protagonistas}">
-					<div class="catalogo-actor-imagen" th:style="'background-image:url(' + ${prota.urlImage} + ')'"></div>
+					<div class="catalogo-actor-imagen" th:style="'background-image:url(' + ${prota.urlImage} + ')'">
+					</div>
 					<div class="catalogo-actor-texto" th:text="${prota.nombre}"></div>
 				</div>
 			</div>
 		</div>
 	</div>
+
+	<nav aria-label="Page navigation example">
+		<ul class="pagination justify-content-center">
+			<li class="page-item" th:each="pagina : ${paginas}" th:classappend="${pagina == actual ? 'active' : '' }">
+				<a class="page-link" th:href="@{'/home?pagina=' + ${pagina -1}}" th:text="${pagina}"></a>
+			</li>
+		</ul>
+	</nav>
 </body>
 
 </html>

@@ -3,7 +3,10 @@ package com.a.peliculas.controller;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.a.peliculas.entity.Actor;
 import com.a.peliculas.entity.Pelicula;
@@ -73,7 +77,17 @@ public class PeliculasController {
 		model.addAttribute("actores", actorService.findAll());
 		
 		return "pelicula";
+	}
+	
+	@GetMapping("/pelicula/{id}/delete")
+	public String delete(@PathVariable(name = "id") Long id, Model model, RedirectAttributes redirect) {
 		
+		peliculaService.delete(id);
+		
+		redirect.addAttribute("msg", "Catálogo actualizado");
+		redirect.addAttribute("tipoMsg", "danger");
+		
+		return "redirect:/listado";
 	}
 	
 	@PostMapping("/pelicula")
@@ -109,17 +123,30 @@ public class PeliculasController {
 	}
 	
 	@GetMapping({"", "/home", "/index"})
-	public String home(Model model) {
+	public String home(Model model, @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina) {
 		
-		model.addAttribute("peliculas", peliculaService.findAll());
-//		model.addAttribute("msg", "Catálogo actualizado");
-		model.addAttribute("tipoMsg", "danger");
+		PageRequest pr = PageRequest.of(pagina, 1);
+		Page<Pelicula> page = peliculaService.findAll(pr);
+		
+		model.addAttribute("peliculas", page.getContent());
+//		
+		if(page.getTotalPages() > 0) {
+			List<Integer> paginas = IntStream.range(1, page.getTotalPages()).boxed().toList();
+			model.addAttribute("paginas", paginas);
+		}
+		
+		model.addAttribute("actual", pagina + 1);
 		
 		return "home";
 	}
 
 	@GetMapping("/listado")
-	public String listado(Model model) {
+	public String listado(Model model, @RequestParam(value = "msg", required = false) String msg, @RequestParam(value = "tipoMsg", required = false) String tipoMsg) {
+		
+		if(!"".equals(msg) && !"".equals(tipoMsg)) {
+			model.addAttribute("msg", msg);
+			model.addAttribute("tipoMsg", tipoMsg);
+		}
 		
 		model.addAttribute("titulo", "Listado de películas");
 		model.addAttribute("peliculas", peliculaService.findAll());
